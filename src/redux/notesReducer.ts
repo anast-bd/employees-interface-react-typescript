@@ -1,3 +1,4 @@
+const ADD_NOTE = 'ADD_NOTE';
 
 export interface NotesState {
     notes: string[]
@@ -18,4 +19,9 @@ export const notesReducer = (state = initialState, action: Action) => {
              return state
     }
 }
+
+export const addNote = (note: string):Action => ({
+    type: ADD_NOTE,
+    payload: note
+})
 
