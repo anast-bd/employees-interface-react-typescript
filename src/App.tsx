@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import NewNote from './components/NewNote'
+import NewNote from './components/NewNote';
 
 function App() {
   return (
