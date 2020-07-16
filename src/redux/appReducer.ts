@@ -49,7 +49,7 @@ export const rootReducer = (state = initialState, action: setCurrentEmployeeActi
         case 'SET_CURRENT_EMPLOYEE': {
             return {
 				...state, 
-				currentEmployeeId: action.payload
+				currentEmployeeId: action.currentEmployeeId
 			}
         }
     default:
@@ -58,11 +58,11 @@ export const rootReducer = (state = initialState, action: setCurrentEmployeeActi
 }
 
 
-type setCurrentEmployeeActionType = {type: typeof SET_CURRENT_EMPLOYEE, payload: EmployeeId}
+type setCurrentEmployeeActionType = {type: typeof SET_CURRENT_EMPLOYEE, currentEmployeeId: EmployeeId}
 
 export const setCurrentEmployee = (currentEmployeeId: EmployeeId):setCurrentEmployeeActionType => ({
     type: SET_CURRENT_EMPLOYEE,
-    payload: currentEmployeeId
+    currentEmployeeId
 })
 
 type RootReducerType = typeof rootReducer;

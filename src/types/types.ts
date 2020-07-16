@@ -19,5 +19,5 @@ export type Props = {
   currentEmployeeId?: EmployeeId | null,
   currentEmployee?: Employee | null,
 
-  onEmployeeClick?: (e: any) => void,
+  onEmployeeClick: (e: any) => void,
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import {Route, BrowserRouter} from 'react-router-dom';
 import EmployeesListContainer from './components/EmployeesListContainer';
-import { EditFormContainer } from './components/EditFormContainer';
+import EditFormContainer from './components/EditFormContainer';
 // import { NewFormContainer } from './components/NewFormContainer';
 
 // import { useSelector, useDispatch } from 'react-redux';
@@ -23,8 +23,7 @@ function App() {
     <BrowserRouter>
       <div className="App">
         <div className='app-wrapper-content'>
-          <Route exact path='/'     render={ () => <EmployeesListContainer /> } />
-          <Route exact path='/edit' render={ () => <EditFormContainer /> } />
+          <EmployeesListContainer />
           {/* <Route exact path='/new'  render={ () => <NewFormContainer />  } /> */}
         </div>
       </div>
