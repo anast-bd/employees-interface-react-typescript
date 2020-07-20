@@ -1,33 +1,18 @@
 import React from 'react';
-import {Route, BrowserRouter} from 'react-router-dom';
-import EmployeesListContainer from './components/EmployeesListContainer';
-import EditFormContainer from './components/EditFormContainer';
-// import { NewFormContainer } from './components/NewFormContainer';
-
-// import { useSelector, useDispatch } from 'react-redux';
-// import { InitialStateType } from './redux/appReducer';
-import { Employee, EmployeeId, Department } from './types/types';
-
+import moment from 'react-moment'
+import MomentUtils from '@date-io/moment';
+import { MuiPickersUtilsProvider} from '@material-ui/pickers'
+import EmployeesList from './components/EmployeesList';
 
 function App() {
-  // const notes = useSelector<NotesState, NotesState['notes']>((state) => state.notes)
-  // const dispatch = useDispatch()
-
-  // const onSetCurrentEmployee = (currentEmployeeId : EmployeeId) => {
-  //   dispatch(setCurrentEmployee(currentEmployeeId))
-  // }
-  // const employees = useSelector<InitialStateType, InitialStateType['employees']>((state) => state.employees)
-  // const departments = useSelector<InitialStateType, InitialStateType['departments']>((state) => state.departments)
-
   return (
-    <BrowserRouter>
+    <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils}>  
       <div className="App">
         <div className='app-wrapper-content'>
-          <EmployeesListContainer />
-          {/* <Route exact path='/new'  render={ () => <NewFormContainer />  } /> */}
+          <EmployeesList />
         </div>
       </div>
-    </BrowserRouter>
+    </MuiPickersUtilsProvider>
   );
 }
 

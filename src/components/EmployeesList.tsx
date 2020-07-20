@@ -1,9 +1,12 @@
-import React, {FC, useState, MouseEvent} from 'react'
-import { EmployeeId, DepartmentId, Props } from '../types/types'
-import {Table, TableBody, TableCell, TableHead, TableRow, Typography, Container, Button, Paper, TextField, Input } from '@material-ui/core'
+import React, {useState} from 'react'
+import { EmployeeId, DepartmentId, Employee, InitialStateType } from '../types/types'
+import {Table, TableBody, TableCell, TableHead, TableRow, Typography, Container, Button, Paper, Tooltip, IconButton} from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete'
+import EditIcon from '@material-ui/icons/Edit'
+import EditForm from './EditForm'
+import AddForm from './AddForm'
+import Moment from 'react-moment'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -15,46 +18,100 @@ const useStyles = makeStyles((theme) => ({
         pudding: '0px'
     },
     listTitle: {
-        paddingTop: '10px',
+        paddingTop: '20px',
         paddingBottom: '5px',
-        paddingLeft: '15px',
+        paddingLeft: '25px',
+        fontSize: '1.7rem'
     },
     listContainer: {
         position: 'relative',
-        top: '20px'
+        top: '20px',
     }
   }));
 
+export const initialCurrentEmployee = {} as Employee
 
-const EmployeesList: FC<Props> = (props) => {
+const EmployeesList = () => {
 
     const classes = useStyles();
 
-    // Edit mode state & 'Edit' button click hangling
-    type editMode = Boolean;
-    let [editMode, setEditMode] = useState(false);
-    const toggleEditMode = () : void => {
-        editMode? setEditMode(false) : setEditMode(true)
+    let initialState : InitialStateType = {
+        employees: [
+            { 	
+                id: 486,
+                firstName: 'Judy',
+                lastName: 'Karter',
+                position: 'development leader',
+                employmentDate: new Date('2012-08-18'),
+                department: 0
+            },
+            { 	
+                id: 332,
+                firstName: 'Dilan',
+                lastName: 'Moran',
+                position: 'project coordinator',
+                employmentDate: new Date('2014-10-05'),
+                mentorId: 486,
+                department: 1
+            },
+            { 	
+                id: 961,
+                firstName: 'Douglas',
+                lastName: 'Stanhope',
+                position: 'data engineer',
+                employmentDate: new Date('2014-03-03'),
+                mentorId: 486,
+                department: 2
+            },
+            { 	
+                id: 173,
+                firstName: 'Bo',
+                lastName: 'Burnham',
+                position: 'front-end developer',
+                employmentDate: new Date('2018-03-07'),
+                mentorId: 332,
+                department: 1
+            }
+        ],
+        departments: [
+                {id: 0, name: 'The First Department'},
+                {id: 1, name: 'The Coolest Department'},
+                {id: 2, name: 'The Chiliest Department'},
+        ]
     }
-    let isEditMode = editMode;
-    const onEditClick = (e: MouseEvent) :void =>{
-        props.onEmployeeClick(e);
-        toggleEditMode();
+
+    const [employees, setEmployees] = useState(initialState.employees)
+    const [departments, setDepartments] = useState(initialState.departments)
+
+    // Edit mode state & 'Edit' button click hangling
+    type editMode = Boolean
+    const [editMode, setEditMode] = useState(false);
+
+    // Add mode state 
+    type addMode = Boolean;
+    let [addMode, setAddMode] = useState(false)
+
+    const toggleAddMode = () => {
+        setAddMode(!addMode)
     }
 
     // Showed data format converting
-    // const getDepartmentName = (employeesDeparimentId: DepartmentId) : string => {
-    //     let employeesDepartment = props.departments!.find( department => employeesDeparimentId === department.id)
-    //     return employeesDepartment!.name
-    // }
-    // const getMentorName = (employeesMentorId: EmployeeId | undefined) : string => {
-    //     if (employeesMentorId !== undefined) {
-    //         let employeesMentor = props.employees!.find( employee => employeesMentorId === employee.id)
-    //         return ( employeesMentor!.firstName + ' ' + employeesMentor!.lastName )
-    //     } else {
-    //         return '-'
-    //     }
-    // }
+    const getDepartmentName = (employeesDeparimentId: DepartmentId) : string => {
+        let employeesDepartment = initialState.departments.find( department => employeesDeparimentId === department.id)
+        return employeesDepartment!.name
+    }
+    const getMentorName = (employeesMentorId: EmployeeId | undefined) : string => {
+        if (employeesMentorId !== undefined) {
+            let employeesMentor = initialState.employees.find( employee => employeesMentorId === employee.id)
+            if (employeesMentor !== undefined) {
+                return (`${employeesMentor!.firstName} ${employeesMentor!.lastName}`)
+                } else {
+                    return '-'
+                }
+        } else {
+            return '-'
+        }
+    }
     function formatDate(date: Date) : string {
             let month = (date.getMonth() + 1).toString();
             let day = date.getDate().toString();
@@ -67,18 +124,61 @@ const EmployeesList: FC<Props> = (props) => {
     
         return [day, month, year].join('.');
     }
-
-    // TextField handle input change
     
+    
+    const addEmployee = (employee: Employee) => {
+        setEmployees([...employees, employee])
+    }
 
+    const deleteEmployee = (id: EmployeeId) => {
+        setEditMode(false)
+        setEmployees(employees.filter((employee: Employee) => employee.id !== id))
+      }
+
+    const onDeleteClick = (id: EmployeeId) => {    
+        let answer = window.confirm('Are you sure you want to delete this employee?')
+        if (answer) {
+            deleteEmployee(id)
+        }
+    }
+
+    // Employee to edit state
+    const [currentEmployee, setCurrentEmployee] = useState(initialCurrentEmployee)
+
+    // Set employee to edit
+    const onEditClick = (employee: Employee) =>{
+        setCurrentEmployee({id: employee.id,
+                            firstName: employee.firstName, 
+                            lastName: employee.lastName, 
+                            department: employee.department, 
+                            position: employee.position, 
+                            mentorId: employee.mentorId, 
+                            employmentDate: employee.employmentDate})
+        setEditMode(true)
+    }
+
+    const updateEmployee = (editedEmployee: Employee) => {
+
+        setEmployees(employees.map(employee => (employee.id === editedEmployee.id)? editedEmployee : employee))
+    }
 
     return (
         <Container className={classes.listContainer}>
         <Paper>
-        <Typography className={classes.listTitle} component="h2" variant="h6" color="primary" gutterBottom>
+        <Typography className={classes.listTitle} component="h2" variant="h4" color="primary" gutterBottom>
             Employees
         </Typography>
-        <Table size="small">
+        <Table >
+            <colgroup>
+                <col style={{width: '4%'}}/>
+                <col style={{width: '11%'}}/>
+                <col style={{width: '11%'}}/>
+                <col style={{width: '15%'}}/>
+                <col style={{width: '15%'}}/>
+                <col style={{width: '15%'}}/>
+                <col style={{width: '14%'}}/>
+                <col style={{width: '15%'}}/>
+            </colgroup>
             <TableHead>
                 <TableRow>
                     <TableCell>ID</TableCell>
@@ -89,76 +189,80 @@ const EmployeesList: FC<Props> = (props) => {
                     <TableCell>Mentor</TableCell>
                     <TableCell>Employment Date</TableCell>
                     <TableCell align="right">
-                        <Button color='primary' variant='outlined'> Add</Button>
+                        <Button color='primary' 
+                                variant='outlined' 
+                                onClick={toggleAddMode}> 
+                                Add
+                        </Button>
                     </TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>
-            {props.employees!.map((employee) => {
-                if ((employee.id === props.currentEmployeeId) && isEditMode){
-                    return (
-                        <TableRow key={employee.id}>
-                            <TableCell>
-                                {employee.id}
-                            </TableCell>
-                            <TableCell>
-                                <TextField value={employee.firstName}></TextField>
-                            </TableCell>
-                            <TableCell>
-                                <TextField value={employee.lastName}></TextField>
-                            </TableCell>
-                            {/* <TableCell><TextField>{getDepartmentName(employee.department)}</TextField></TableCell> */}
-                            <TableCell><TextField value={employee.department}></TextField></TableCell>
-                            <TableCell><TextField value={employee.position}></TextField></TableCell>
-                            {/* <TableCell><TextField>{getMentorName(employee.mentorId)}</TextField></TableCell> */}
-                            <TableCell><TextField value={employee.mentorId}>{employee.mentorId}</TextField></TableCell>
-                            <TableCell><TextField>{formatDate(employee.employmentDate)}</TextField></TableCell>
-                            <TableCell align="right">
-                                <Button color='primary' 
-                                        variant='contained'
-                                        data-id={employee.id}
-                                        onClick={onEditClick}>
-                                        Save
-                                </Button>
-                                <Button className={classes.deleteButton} color='secondary' variant='outlined'>Cancel</Button>
-                            </TableCell>
-                        </TableRow>
-                    )
-                } else {
-                    return (
-                        <TableRow key={employee.id}>
-                            <TableCell>{employee.id}</TableCell>
-                            <TableCell>{employee.firstName}</TableCell>
-                            <TableCell>{employee.lastName}</TableCell>
-                            {/* <TableCell>{getDepartmentName(employee.department)}</TableCell> */}
-                            <TableCell>{employee.department}</TableCell>
-                            <TableCell>{employee.position}</TableCell>
-                            {/* <TableCell>{getMentorName(employee.mentorId)}</TableCell> */}
-                            <TableCell>{employee.mentorId}</TableCell>
-                            <TableCell>{formatDate(employee.employmentDate)}</TableCell>
-                            <TableCell align="right">
-                                {!isEditMode && 
-                                    <>
-                                        <Button color='primary' 
-                                            variant='contained'
-                                            data-id={employee.id}
-                                            onClick={onEditClick}>
-                                            <EditIcon />
-                                        </Button>
-                                        <Button className={classes.deleteButton} 
-                                            color='secondary' 
-                                            variant='outlined'> 
-                                            <DeleteIcon />
-                                        </Button>
-                                    </>
-                                }
+            { addMode &&
+                <AddForm addEmployee={addEmployee}
+                         setAddMode={setAddMode} 
+                         employees={employees}
+                         departments={departments}
+                         getDepartmentName={getDepartmentName}
+                         getMentorName={getMentorName}
+                         />
+            }
+            {employees.length > 0 ? (
+                employees!.map((employee) => {
+                    if ((employee.id === currentEmployee.id) && editMode){
+                return ( 
+                    <EditForm   setEditMode={setEditMode}
+                                employees={employees}
+                                departments={departments}
+                                currentEmployee={currentEmployee}
+                                setCurrentEmployee={setCurrentEmployee}
+                                updateEmployee={updateEmployee} 
+                                getDepartmentName={getDepartmentName}
+                                getMentorName={getMentorName}/>
+                )
+            } else {
+                return (
+                    <TableRow key={employee.id}>
+                        <TableCell>{employee.id}</TableCell>
+                        <TableCell>{employee.firstName}</TableCell>
+                        <TableCell>{employee.lastName}</TableCell>
+                        <TableCell>{getDepartmentName(employee.department)}</TableCell>
+                        {/* <TableCell>{employee.department}</TableCell> */}
+                        <TableCell>{employee.position}</TableCell>
+                        <TableCell>{getMentorName(employee.mentorId)}</TableCell>
+                        {/* <TableCell>{employee.mentorId}</TableCell> */}
+                        <TableCell>
+                            <Moment format="DD-MM-YYYY">
+                                {employee.employmentDate.toDateString()}
+                            </Moment>
+                            {/* {formatDate(employee.employmentDate)} */}
+                        </TableCell>
 
-                            </TableCell>
-                        </TableRow>
-                    )
-                }
-            
-            })}
+                        <TableCell align="right">
+                            {!editMode && 
+                                <>
+                                    <Button color='primary' 
+                                            variant='contained'
+                                            onClick={() => onEditClick(employee)}>
+                                            <EditIcon />
+                                    </Button>
+                                    <Button className={classes.deleteButton} 
+                                            color='secondary' 
+                                            variant='outlined'
+                                            onClick={() => onDeleteClick(employee.id)}>
+                                            <DeleteIcon />
+                                    </Button>
+                                </>
+                            }
+                        </TableCell>
+                    </TableRow>
+                )
+             } 
+            })) : (
+                <TableRow>
+                    <TableCell align="center" colSpan={8}>No Employees</TableCell>
+                </TableRow>
+              )}
             </TableBody>
             </Table>
         </Paper>
@@ -166,4 +270,4 @@ const EmployeesList: FC<Props> = (props) => {
     )
 }
 
-export default EmployeesList;
+export default EmployeesList

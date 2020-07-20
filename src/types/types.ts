@@ -5,7 +5,7 @@ export interface Department {
   name: string
 }
 export interface Employee {
-  id?: EmployeeId
+  id: EmployeeId
   firstName: string
   lastName: string
   position: string
@@ -13,11 +13,11 @@ export interface Employee {
   mentorId?: EmployeeId
   department: DepartmentId
 }
-export type Props = {
-	employees?: Employee[] | null,
-	departments?: Department[] | null,
-  currentEmployeeId?: EmployeeId | null,
-  currentEmployee?: Employee | null,
-
-  onEmployeeClick: (e: any) => void,
+// export type Props = {
+// 	employees?: Employee[] | null,
+// 	departments?: Department[] | null,
+// }
+export type InitialStateType = {
+  employees: Employee[],
+  departments: Department[],
 }
