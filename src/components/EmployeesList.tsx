@@ -214,15 +214,12 @@ const EmployeesList = () => {
                         <TableCell>{employee.firstName}</TableCell>
                         <TableCell>{employee.lastName}</TableCell>
                         <TableCell>{getDepartmentName(employee.department)}</TableCell>
-                        {/* <TableCell>{employee.department}</TableCell> */}
                         <TableCell>{employee.position}</TableCell>
                         <TableCell>{getMentorName(employee.mentorId)}</TableCell>
-                        {/* <TableCell>{employee.mentorId}</TableCell> */}
                         <TableCell>
                             <Moment format="DD-MM-YYYY">
                                 {employee.employmentDate.toDateString()}
                             </Moment>
-                            {/* {formatDate(employee.employmentDate)} */}
                         </TableCell>
 
                         <TableCell align="right">
