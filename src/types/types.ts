@@ -13,10 +13,7 @@ export interface Employee {
   mentorId?: EmployeeId
   department: DepartmentId
 }
-// export type Props = {
-// 	employees?: Employee[] | null,
-// 	departments?: Department[] | null,
-// }
+
 export type InitialStateType = {
   employees: Employee[],
   departments: Department[],

@@ -73,7 +73,6 @@ const EditForm: FC<Props> = props => {
 
   // Get mentor id and add it to a newEmployee
   const handleMentorId = (event: any, value: string) => {
-    // if (value !== undefined){
       let mentorName = value.split(' ')[0]
       let mentor = props.employees.find(employee => {
         if(employee.firstName === mentorName){
@@ -81,9 +80,6 @@ const EditForm: FC<Props> = props => {
         }})
       let mentorIdString = mentor!.id.toString()
       setEditedEmployee({ ...editedEmployee, mentorId: mentorIdString })
-    // } else {
-    //   setEditedEmployee({...editedEmployee, mentorId: props.currentEmployee.mentorId.toString()})
-    // }
   }
   
   const handleDepartment = (event: any, value: string) => {
